@@ -7,7 +7,7 @@ Sheng Hu\*, Yuqing Ma\*, Xianglong Liu†, Yanlu Wei, Shihao Bai
 *Proceedings of the AAAI Conference on Artificial Intelligence (AAAI)*, 2021  
 (\* equal contribution, † corresponding author)
 
-Code is in the forked repo [husheng12345/SRAN](https://github.com/husheng12345/SRAN)
+Code is based on the forked repo [husheng12345/SRAN](https://github.com/husheng12345/SRAN)
 
 ## Remarks by cwhy
 
