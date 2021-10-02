@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
-
-
 import argparse
 import copy
 import os
 import random
-import sys
 
 import numpy as np
 from tqdm import trange
@@ -16,11 +12,9 @@ from build_tree import (build_center_single, build_distribute_four,
                         build_in_distribute_four_out_center_single,
                         build_left_center_single_right_center_single,
                         build_up_center_single_down_center_single)
-from const import IMAGE_SIZE, RULE_ATTR
-from rendering import (generate_matrix, generate_matrix_answer, imsave, imshow,
-                       render_panel)
-from Rule import Rule_Wrapper
-from sampling import sample_attr, sample_attr_avail, sample_rules
+from const import IMAGE_SIZE
+from rendering import render_panel
+from sampling import sample_attr_avail, sample_rules
 from serialize import dom_problem, serialize_aot, serialize_rules
 from solver import solve
 
@@ -34,7 +28,7 @@ def separate(args, all_configs):
     random.seed(args.seed)
     np.random.seed(args.seed)
 
-    for key in all_configs.keys():
+    for key in list(all_configs.keys()):
         acc = 0
         for k in trange(args.num_samples):
             count_num = k % 10
@@ -48,10 +42,10 @@ def separate(args, all_configs):
             root = all_configs[key]
             while True:
                 rule_groups = sample_rules()
-                new_root = root.prune(rule_groups)    
+                new_root = root.prune(rule_groups)
                 if new_root is not None:
                     break
-            
+
             start_node = new_root.sample()
 
             row_1_1 = copy.deepcopy(start_node)
@@ -125,97 +119,106 @@ def separate(args, all_configs):
             context = [row_1_1, row_1_2, row_1_3, row_2_1, row_2_2, row_2_3, row_3_1, row_3_2]
             modifiable_attr = sample_attr_avail(rule_groups, row_3_3)
             answer_AoT = copy.deepcopy(row_3_3)
-            candidates = [answer_AoT]  
+            candidates = [answer_AoT]
 
             attr_num = 3
             if attr_num <= len(modifiable_attr):
-                idx = np.random.choice(len(modifiable_attr), attr_num, replace=False)   
+                idx = np.random.choice(len(modifiable_attr), attr_num, replace=False)
                 selected_attr = [modifiable_attr[i] for i in idx]
             else:
                 selected_attr = modifiable_attr
 
             mode = None
-            #switch attribute 'Number' for convenience
-            pos = [i for i in xrange(len(selected_attr)) if selected_attr[i][1]=='Number']
+            # switch attribute 'Number' for convenience
+            pos = [i for i in range(len(selected_attr)) if selected_attr[i][1] == 'Number']
             if pos:
                 pos = pos[0]
-                selected_attr[pos], selected_attr[-1] = selected_attr[-1], selected_attr[pos] 
+                selected_attr[pos], selected_attr[-1] = selected_attr[-1], selected_attr[pos]
 
-                pos = [i for i in xrange(len(selected_attr)) if selected_attr[i][1]=='Position']
+                pos = [i for i in range(len(selected_attr)) if selected_attr[i][1] == 'Position']
                 if pos:
                     mode = 'Position-Number'
-            values = [] 
+            values = []
             if len(selected_attr) >= 3:
                 mode_3 = None
                 if mode == 'Position-Number':
-                    mode_3 = '3-Position-Number'  
-                for i in xrange(attr_num):    
-                    component_idx, attr_name, min_level, max_level, attr_uni = selected_attr[i][0], selected_attr[i][1], selected_attr[i][3], selected_attr[i][4], selected_attr[i][5]                
-                    value = answer_AoT.sample_new_value(component_idx, attr_name, min_level, max_level, attr_uni, mode_3)
+                    mode_3 = '3-Position-Number'
+                for i in range(attr_num):
+                    component_idx, attr_name, min_level, max_level, attr_uni = selected_attr[i][0], selected_attr[i][1], \
+                                                                               selected_attr[i][3], selected_attr[i][4], \
+                                                                               selected_attr[i][5]
+                    value = answer_AoT.sample_new_value(component_idx, attr_name, min_level, max_level, attr_uni,
+                                                        mode_3)
                     values.append(value)
                     tmp = []
                     for j in candidates:
                         new_AoT = copy.deepcopy(j)
                         new_AoT.apply_new_value(component_idx, attr_name, value)
                         tmp.append(new_AoT)
-                    candidates += tmp   
+                    candidates += tmp
 
-            elif len(selected_attr) == 2:     
-                component_idx, attr_name, min_level, max_level, attr_uni = selected_attr[0][0], selected_attr[0][1], selected_attr[0][3], selected_attr[0][4], selected_attr[0][5]               
+            elif len(selected_attr) == 2:
+                component_idx, attr_name, min_level, max_level, attr_uni = selected_attr[0][0], selected_attr[0][1], \
+                                                                           selected_attr[0][3], selected_attr[0][4], \
+                                                                           selected_attr[0][5]
                 value = answer_AoT.sample_new_value(component_idx, attr_name, min_level, max_level, attr_uni, None)
                 values.append(value)
                 new_AoT = copy.deepcopy(answer_AoT)
                 new_AoT.apply_new_value(component_idx, attr_name, value)
                 candidates.append(new_AoT)
-                component_idx, attr_name, min_level, max_level, attr_uni = selected_attr[1][0], selected_attr[1][1], selected_attr[1][3], selected_attr[1][4], selected_attr[1][5]
-                if mode == 'Position-Number':  
-                    ran,qu = 6, 1 
+                component_idx, attr_name, min_level, max_level, attr_uni = selected_attr[1][0], selected_attr[1][1], \
+                                                                           selected_attr[1][3], selected_attr[1][4], \
+                                                                           selected_attr[1][5]
+                if mode == 'Position-Number':
+                    ran, qu = 6, 1
                 else:
-                    ran,qu = 3, 2   
-                for i in xrange(ran):
+                    ran, qu = 3, 2
+                for i in range(ran):
                     value = answer_AoT.sample_new_value(component_idx, attr_name, min_level, max_level, attr_uni, None)
                     values.append(value)
-                    for j in xrange(qu):
+                    for j in range(qu):
                         new_AoT = copy.deepcopy(candidates[j])
                         new_AoT.apply_new_value(component_idx, attr_name, value)
                         candidates.append(new_AoT)
 
             elif len(selected_attr) == 1:
-                component_idx, attr_name, min_level, max_level, attr_uni = selected_attr[0][0], selected_attr[0][1], selected_attr[0][3], selected_attr[0][4], selected_attr[0][5]             
-                for i in xrange(7):
+                component_idx, attr_name, min_level, max_level, attr_uni = selected_attr[0][0], selected_attr[0][1], \
+                                                                           selected_attr[0][3], selected_attr[0][4], \
+                                                                           selected_attr[0][5]
+                for i in range(7):
                     value = answer_AoT.sample_new_value(component_idx, attr_name, min_level, max_level, attr_uni, None)
                     values.append(value)
                     new_AoT = copy.deepcopy(answer_AoT)
                     new_AoT.apply_new_value(component_idx, attr_name, value)
-                    candidates.append(new_AoT) 
+                    candidates.append(new_AoT)
 
             random.shuffle(candidates)
             answers = []
             for candidate in candidates:
                 answers.append(render_panel(candidate))
 
-            #imsave(generate_matrix_answer(imgs + answers), "/media/dsg3/hs/RAVEN_image/experiments2/{}/{}.jpg".format(key, k))    
-            
+            # imsave(generate_matrix_answer(imgs + answers), "/media/dsg3/hs/RAVEN_image/experiments2/{}/{}.jpg".format(key, k))
+
             image = imgs[0:8] + answers
             target = candidates.index(answer_AoT)
             predicted = solve(rule_groups, context, candidates)
             meta_matrix, meta_target = serialize_rules(rule_groups)
             structure, meta_structure = serialize_aot(start_node)
-            np.savez("{}/{}/RAVEN_{}_{}.npz".format(args.save_dir, key, k, set_name), image=image, 
-                                                                                      target=target, 
-                                                                                      predict=predicted,
-                                                                                      meta_matrix=meta_matrix,
-                                                                                      meta_target=meta_target, 
-                                                                                      structure=structure,
-                                                                                      meta_structure=meta_structure)
-            with open("{}/{}/RAVEN_{}_{}.xml".format(args.save_dir, key, k, set_name), "w") as f:
+            np.savez("{}/{}/RAVEN_{}_{}.npz".format(args.save_dir, key, k, set_name), image=image,
+                     target=target,
+                     predict=predicted,
+                     meta_matrix=meta_matrix,
+                     meta_target=meta_target,
+                     structure=structure,
+                     meta_structure=meta_structure)
+            with open("{}/{}/RAVEN_{}_{}.xml".format(args.save_dir, key, k, set_name), "wb") as f:
                 dom = dom_problem(context + candidates, rule_groups)
                 f.write(dom)
-            
+
             if target == predicted:
                 acc += 1
-        print "Accuracy of {}: {}".format(key, float(acc) / args.num_samples)
-    
+        print(("Accuracy of {}: {}".format(key, float(acc) / args.num_samples)))
+
 
 def main():
     main_arg_parser = argparse.ArgumentParser(description="parser for I-RAVEN")
@@ -230,7 +233,7 @@ def main():
     main_arg_parser.add_argument("--val", type=float, default=2,
                                  help="the proportion of the size of validation set")
     main_arg_parser.add_argument("--test", type=float, default=2,
-                                 help="the proportion of the size of test set")                             
+                                 help="the proportion of the size of test set")
     args = main_arg_parser.parse_args()
 
     all_configs = {"center_single": build_center_single(),
@@ -244,11 +247,11 @@ def main():
     if not os.path.exists(args.save_dir):
         os.mkdir(args.save_dir)
     if not args.fuse:
-        for key in all_configs.keys():
+        for key in list(all_configs.keys()):
             if not os.path.exists(os.path.join(args.save_dir, key)):
                 os.mkdir(os.path.join(args.save_dir, key))
         separate(args, all_configs)
-    
+
 
 if __name__ == "__main__":
     main()

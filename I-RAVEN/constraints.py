@@ -6,7 +6,7 @@ from const import (ANGLE_MAX, ANGLE_MIN, COLOR_MAX, COLOR_MIN, NUM_MAX,
                    UNI_MIN)
 
 
-def gen_layout_constraint(pos_type, pos_list, 
+def gen_layout_constraint(pos_type, pos_list,
                           num_min=NUM_MIN, num_max=NUM_MAX,
                           uni_min=UNI_MIN, uni_max=UNI_MAX):
     constraint = {"Number": [num_min, num_max],
@@ -15,8 +15,8 @@ def gen_layout_constraint(pos_type, pos_list,
     return constraint
 
 
-def gen_entity_constraint(type_min=TYPE_MIN, type_max=TYPE_MAX, 
-                          size_min=SIZE_MIN, size_max=SIZE_MAX, 
+def gen_entity_constraint(type_min=TYPE_MIN, type_max=TYPE_MAX,
+                          size_min=SIZE_MIN, size_max=SIZE_MAX,
                           color_min=COLOR_MIN, color_max=COLOR_MAX,
                           angle_min=ANGLE_MIN, angle_max=ANGLE_MAX):
     constraint = {"Type": [type_min, type_max],
@@ -26,11 +26,11 @@ def gen_entity_constraint(type_min=TYPE_MIN, type_max=TYPE_MAX,
     return constraint
 
 
-def rule_constraint(rule_list, num_min, num_max, 
-                               uni_min, uni_max,
-                               type_min, type_max,
-                               size_min, size_max,
-                               color_min, color_max):
+def rule_constraint(rule_list, num_min: int, num_max: int,
+                    uni_min: int, uni_max: int,
+                    type_min: int, type_max: int,
+                    size_min: int, size_max: int,
+                    color_min: int, color_max: int):
     """Generate constraints given the rules and the original constraints 
     from layout and entity. Note that each attribute has at most one rule
     applied on it.
@@ -87,7 +87,7 @@ def rule_constraint(rule_list, num_min, num_max,
                 # at least two configurations
                 # SET_DIFF
                 else:
-                    num_min = (num_max + 2) / 2 - 1
+                    num_min = (num_max + 2) // 2 - 1
                     num_max = num_max - 1
             if rule.attr == "Size":
                 if rule.value > 0:
@@ -128,10 +128,20 @@ def rule_constraint(rule_list, num_min, num_max,
             if rule.attr == "Color":
                 if color_max - color_min + 1 < 3:
                     color_max = color_min - 1
-        
-    return gen_layout_constraint(None, [], 
-                                 num_min, num_max, 
+
+        assert isinstance(num_min, int)
+        assert isinstance(num_max, int)
+        assert isinstance(uni_min, int)
+        assert isinstance(uni_max, int)
+        assert isinstance(type_min, int)
+        assert isinstance(type_max, int)
+        assert isinstance(size_min, int)
+        assert isinstance(size_max, int)
+        assert isinstance(color_min, int)
+        assert isinstance(color_max, int)
+    return gen_layout_constraint(None, [],
+                                 num_min, num_max,
                                  uni_min, uni_max), \
-           gen_entity_constraint(type_min, type_max, 
-                                 size_min, size_max, 
+           gen_entity_constraint(type_min, type_max,
+                                 size_min, size_max,
                                  color_min, color_max)

@@ -9,7 +9,7 @@ from const import (ANGLE_MAX, ANGLE_MIN, ANGLE_VALUES, COLOR_MAX, COLOR_MIN,
                    UNI_MAX, UNI_MIN, UNI_VALUES)
 
 
-class Attribute(object):
+class Attribute:
     """Super-class for all attributes. This should not be instantiated.
     In the sub-class, each attribute should have a pre-defined value set
     and a member to indicate the index in the value set. This design enables
@@ -57,7 +57,7 @@ class Number(Attribute):
         # max_level: max level index
         min_level = max(self.min_level, min_level)
         max_level = min(self.max_level, max_level)
-        self.value_level = np.random.choice(range(min_level, max_level + 1))
+        self.value_level = np.random.choice(list(range(min_level, max_level + 1)))
 
     def sample_new(self, min_level=None, max_level=None, previous_values=None):
         """Sample new values for generating the answer set.
@@ -65,13 +65,13 @@ class Number(Attribute):
             new_idx(int): a new value_level
         """
         if min_level is None or max_level is None:
-            values = range(self.min_level, self.max_level + 1)
+            values = list(range(self.min_level, self.max_level + 1))
         else:
-            values = range(min_level, max_level + 1)
+            values = list(range(min_level, max_level + 1))
         if not previous_values:
-            available = set(values) - set(self.previous_values) - set([self.value_level])
+            available = set(values) - set(self.previous_values) - {self.value_level}
         else:
-            available = set(values) - set(previous_values) - set([self.value_level])
+            available = set(values) - set(previous_values) - {self.value_level}
         new_idx = np.random.choice(list(available))
         return new_idx
     
@@ -99,17 +99,17 @@ class Type(Attribute):
     def sample(self, min_level=TYPE_MIN, max_level=TYPE_MAX):
         min_level = max(self.min_level, min_level)
         max_level = min(self.max_level, max_level)
-        self.value_level = np.random.choice(range(min_level, max_level + 1))
+        self.value_level = np.random.choice(list(range(min_level, max_level + 1)))
 
     def sample_new(self, min_level=None, max_level=None, previous_values=None):
         if min_level is None or max_level is None:
-            values = range(self.min_level, self.max_level + 1)
+            values = list(range(self.min_level, self.max_level + 1))
         else:
-            values = range(min_level, max_level + 1)
+            values = list(range(min_level, max_level + 1))
         if not previous_values:
-            available = set(values) - set(self.previous_values) - set([self.value_level])
+            available = set(values) - set(self.previous_values) - {self.value_level}
         else:
-            available = set(values) - set(previous_values) - set([self.value_level])
+            available = set(values) - set(previous_values) - {self.value_level}
         new_idx = np.random.choice(list(available))
         return new_idx
 
@@ -137,17 +137,17 @@ class Size(Attribute):
     def sample(self, min_level=SIZE_MIN, max_level=SIZE_MAX):
         min_level = max(self.min_level, min_level)
         max_level = min(self.max_level, max_level)
-        self.value_level = np.random.choice(range(min_level, max_level + 1))   
+        self.value_level = np.random.choice(list(range(min_level, max_level + 1)))   
 
     def sample_new(self, min_level=None, max_level=None, previous_values=None):
         if min_level is None or max_level is None:
-            values = range(self.min_level, self.max_level + 1)
+            values = list(range(self.min_level, self.max_level + 1))
         else:
-            values = range(min_level, max_level + 1)
+            values = list(range(min_level, max_level + 1))
         if not previous_values:
-            available = set(values) - set(self.previous_values) - set([self.value_level])
+            available = set(values) - set(self.previous_values) - {self.value_level}
         else:
-            available = set(values) - set(previous_values) - set([self.value_level])
+            available = set(values) - set(previous_values) - {self.value_level}
         new_idx = np.random.choice(list(available))
         return new_idx
 
@@ -175,17 +175,17 @@ class Color(Attribute):
     def sample(self, min_level=COLOR_MIN, max_level=COLOR_MAX):
         min_level = max(self.min_level, min_level)
         max_level = min(self.max_level, max_level)
-        self.value_level = np.random.choice(range(min_level, max_level + 1))
+        self.value_level = np.random.choice(list(range(min_level, max_level + 1)))
 
     def sample_new(self, min_level=None, max_level=None, previous_values=None):
         if min_level is None or max_level is None:
-            values = range(self.min_level, self.max_level + 1)
+            values = list(range(self.min_level, self.max_level + 1))
         else:
-            values = range(min_level, max_level + 1)
+            values = list(range(min_level, max_level + 1))
         if not previous_values:
-            available = set(values) - set(self.previous_values) - set([self.value_level])
+            available = set(values) - set(self.previous_values) - {self.value_level}
         else:
-            available = set(values) - set(previous_values) - set([self.value_level])
+            available = set(values) - set(previous_values) - {self.value_level}
         new_idx = np.random.choice(list(available))
         return new_idx
 
@@ -193,7 +193,10 @@ class Color(Attribute):
         return self.value_level
     
     def set_value_level(self, value_level):
-        self.value_level = value_level
+        if isinstance(value_level, np.int64):
+            self.value_level = int(value_level)
+        else:
+            self.value_level = value_level
 
     def get_value(self, value_level=None):
         if value_level is None:
@@ -213,17 +216,17 @@ class Angle(Attribute):
     def sample(self, min_level=ANGLE_MIN, max_level=ANGLE_MAX):
         min_level = max(self.min_level, min_level)
         max_level = min(self.max_level, max_level)
-        self.value_level = np.random.choice(range(min_level, max_level + 1))
+        self.value_level = np.random.choice(list(range(min_level, max_level + 1)))
 
     def sample_new(self, min_level=None, max_level=None, previous_values=None):
         if min_level is None or max_level is None:
-            values = range(self.min_level, self.max_level + 1)
+            values = list(range(self.min_level, self.max_level + 1))
         else:
-            values = range(min_level, max_level + 1)
+            values = list(range(min_level, max_level + 1))
         if not previous_values:
-            available = set(values) - set(self.previous_values) - set([self.value_level])
+            available = set(values) - set(self.previous_values) - {self.value_level}
         else:
-            available = set(values) - set(previous_values) - set([self.value_level])
+            available = set(values) - set(previous_values) - {self.value_level}
         new_idx = np.random.choice(list(available))
         return new_idx
 
@@ -249,7 +252,7 @@ class Uniformity(Attribute):
         self.max_level = max_level
     
     def sample(self):
-        self.value_level = np.random.choice(range(self.min_level, self.max_level + 1))
+        self.value_level = np.random.choice(list(range(self.min_level, self.max_level + 1)))
     
     def sample_new(self):
         # Should not resample uniformity
@@ -298,7 +301,7 @@ class Position(Attribute):
         """
         length = len(self.values)
         assert num <= length
-        self.value_idx = np.random.choice(range(length), num, False)
+        self.value_idx = np.random.choice(list(range(length)), num, False)
     
     def sample_new(self, num, previous_values=None):
         # Here sample new relies on probability
