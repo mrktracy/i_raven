@@ -5,8 +5,7 @@
 
 #$ -l h_rt=24:00:00     # hard time limit of 24 hours
 
-#$ -m ea                # send email when finished or aborted 
-#$ -j y					# merge error and output files into one
+#$ -m ea                # send email when finished or aborted
 
 #$ -l mem_per_core=6G	# memory requirements per CPU core
 #$ -l gpus=2			# number of GPUs
