@@ -105,19 +105,31 @@ META_STRUCTURE_FORMAT = ["Singleton", "Left_Right", "Up_Down", "Out_In", "Left",
 #               ["Constant", "Color", None],
 #               ["Constant", "Color", None]]]
 
-# modification: remove distribute-3 and arithmetic
-RULE_ATTR = [[["Progression", "Number", [-2, -1, 1, 2]],
-              ["Progression", "Position", [-2, -1, 1, 2]],
-              ["Constant", "Number/Position", None],
+# # modification: remove distribute-3 and arithmetic
+# RULE_ATTR = [[["Progression", "Number", [-2, -1, 1, 2]],
+#               ["Progression", "Position", [-2, -1, 1, 2]],
+#               ["Constant", "Number/Position", None],
+#               ["Constant", "Number/Position", None],
+#               ["Constant", "Number/Position", None],
+#               ["Constant", "Number/Position", None]],
+#              [["Progression", "Type", [-2, -1, 1, 2]],
+#               ["Constant", "Type", None],
+#               ["Constant", "Type", None]],
+#              [["Progression", "Size", [-2, -1, 1, 2]],
+#               ["Constant", "Size", None],
+#               ["Constant", "Size", None]],
+#              [["Progression", "Color", [-2, -1, 1, 2]],
+#               ["Constant", "Color", None],
+#               ["Constant", "Color", None]]]
+
+# modification: remove all but constant
+RULE_ATTR = [[["Constant", "Number/Position", None],
               ["Constant", "Number/Position", None],
               ["Constant", "Number/Position", None],
               ["Constant", "Number/Position", None]],
-             [["Progression", "Type", [-2, -1, 1, 2]],
-              ["Constant", "Type", None],
+             [["Constant", "Type", None],
               ["Constant", "Type", None]],
-             [["Progression", "Size", [-2, -1, 1, 2]],
-              ["Constant", "Size", None],
+             [["Constant", "Size", None],
               ["Constant", "Size", None]],
-             [["Progression", "Color", [-2, -1, 1, 2]],
-              ["Constant", "Color", None],
+             [["Constant", "Color", None],
               ["Constant", "Color", None]]]
