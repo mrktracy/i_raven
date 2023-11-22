@@ -1,4 +1,4 @@
-#!binbash -l
+#!/bin/bash -l
 
 #$ -P noc-lab           # project name
 #$ -N i_raven_gen    	# job name
