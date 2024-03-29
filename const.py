@@ -66,24 +66,24 @@ META_STRUCTURE_FORMAT = ["Singleton", "Left_Right", "Up_Down", "Out_In", "Left",
 # Distribute_Three on Color: Three colors through each row
 # Constant on Color: Nothing changes
 # Note that all rules on Type, Size and Color enforce value consistency in a panel
-# RULE_ATTR = [[["Progression", "Number", [-2, -1, 1, 2]],
-#               ["Progression", "Position", [-2, -1, 1, 2]],
-#               ["Arithmetic", "Number", [1, -1]],
-#               ["Arithmetic", "Position", [1, -1]],
-#               ["Distribute_Three", "Number", None],
-#               ["Distribute_Three", "Position", None],
-#               ["Constant", "Number/Position", None]],
-#              [["Progression", "Type", [-2, -1, 1, 2]],
-#               ["Distribute_Three", "Type", None],
-#               ["Constant", "Type", None]],
-#              [["Progression", "Size", [-2, -1, 1, 2]],
-#               ["Arithmetic", "Size", [1, -1]],
-#               ["Distribute_Three", "Size", None],
-#               ["Constant", "Size", None]],
-#              [["Progression", "Color", [-2, -1, 1, 2]],
-#               ["Arithmetic", "Color", [1, -1]],
-#               ["Distribute_Three", "Color", None],
-#               ["Constant", "Color", None]]]
+RULE_ATTR = [[["Progression", "Number", [-2, -1, 1, 2]],
+              ["Progression", "Position", [-2, -1, 1, 2]],
+              ["Arithmetic", "Number", [1, -1]],
+              ["Arithmetic", "Position", [1, -1]],
+              ["Distribute_Three", "Number", None],
+              ["Distribute_Three", "Position", None],
+              ["Constant", "Number/Position", None]],
+             [["Progression", "Type", [-2, -1, 1, 2]],
+              ["Distribute_Three", "Type", None],
+              ["Constant", "Type", None]],
+             [["Progression", "Size", [-2, -1, 1, 2]],
+              ["Arithmetic", "Size", [1, -1]],
+              ["Distribute_Three", "Size", None],
+              ["Constant", "Size", None]],
+             [["Progression", "Color", [-2, -1, 1, 2]],
+              ["Arithmetic", "Color", [1, -1]],
+              ["Distribute_Three", "Color", None],
+              ["Constant", "Color", None]]]
 
 # # modification: remove distribute-3
 # RULE_ATTR = [[["Progression", "Number", [-2, -1, 1, 2]],
@@ -122,14 +122,14 @@ META_STRUCTURE_FORMAT = ["Singleton", "Left_Right", "Up_Down", "Out_In", "Left",
 #               ["Constant", "Color", None],
 #               ["Constant", "Color", None]]]
 
-# modification: remove all but constant
-RULE_ATTR = [[["Constant", "Number/Position", None],
-              ["Constant", "Number/Position", None],
-              ["Constant", "Number/Position", None],
-              ["Constant", "Number/Position", None]],
-             [["Constant", "Type", None],
-              ["Constant", "Type", None]],
-             [["Constant", "Size", None],
-              ["Constant", "Size", None]],
-             [["Constant", "Color", None],
-              ["Constant", "Color", None]]]
+# # modification: remove all but constant
+# RULE_ATTR = [[["Constant", "Number/Position", None],
+#               ["Constant", "Number/Position", None],
+#               ["Constant", "Number/Position", None],
+#               ["Constant", "Number/Position", None]],
+#              [["Constant", "Type", None],
+#               ["Constant", "Type", None]],
+#              [["Constant", "Size", None],
+#               ["Constant", "Size", None]],
+#              [["Constant", "Color", None],
+#               ["Constant", "Color", None]]]
