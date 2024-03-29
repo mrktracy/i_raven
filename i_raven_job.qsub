@@ -13,4 +13,4 @@
 
 module load miniconda
 conda activate i_raven_venv
-python main.py --num-samples 10000 --save-dir '../i_raven_data_cnst/'
+python main.py --num-samples 10000 --save-dir '../i_raven_data_full/'
